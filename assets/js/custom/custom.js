@@ -49,6 +49,33 @@ class Products{
 // class responsable for diplaying the data
 class UI{
 
+    // Display profucts function, it take data grom products class
+    displayProducts(products){
+        let result = ''
+
+        products.forEach(product => {
+
+            result += `
+                <!-- Start Single Product Example-->
+                <article class="product">
+                    <div class="img-container">
+                        <img src="${product.image}" alt="${product.title}" class="product-img"/>
+                        <button class="bag-btn" data-id="${product.id}">
+                            <i class="fas fa-shopping-cart"></i>
+                            add to bag
+                        </button>
+                    </div>
+                    <h3>${product.title}</h3>
+                    <h4>${product.price}</h4>
+                </article>
+                <!-- End Single Product Example-->
+            `;
+        });
+
+        // select the producs center and append a child inside it
+        document.querySelector('.products-center').innerHTML = result;
+        
+    }
 }
 
 // class responsable for storing the data
@@ -63,11 +90,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const ui = new UI();
     const products = new Products();
 
-    products.getProducts().then(products =>{
-
-        console.log(products)
-
-    }).catch(err =>{
+    products.getProducts().then(products => ui.displayProducts(products)).catch(err =>{
 
         console.log(err)
 
