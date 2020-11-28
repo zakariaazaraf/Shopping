@@ -1,7 +1,7 @@
 // Variables
 const cartBtn = document.querySelector('.cart-btn');
 const closeCart = document.querySelector('.close-cart');
-const clearCar = document.querySelector('.clear-cart');
+const clearCart = document.querySelector('.clear-cart');
 const cartDOM = document.querySelector('.cart');
 const cartOverlay = document.querySelector('.cart-overlay');
 const cartItems = document.querySelector('.cart-items');
@@ -109,7 +109,6 @@ class UI{
                 
                 // add product to the cart
                 cart = [...cart, cartItem];
-                console.log(cart)
                 //Storage.addProductToCart(cartItem);
 
                 // save cart in local storage
@@ -117,10 +116,12 @@ class UI{
 
                 // set cart values
                 this.setCartValues(cart);
+
                 // display cart values
+                this.addCartItem(cartItem);
 
                 // show the cart
-                
+                this.showCart();
                 
                 
             });
@@ -137,13 +138,48 @@ class UI{
         cart.map(item => {
             itemsTotal += item.amount;
             totalPrice += item.price * item.amount;
-
-            console.log(item.amount);
-            console.log(item.price);
         });
 
         cartItems.innerText = itemsTotal;
         cartTotal.innerText = parseFloat(totalPrice.toFixed(2));
+
+    }
+
+    // add the cart items
+    addCartItem(item){
+        let resualt = '';
+        console.log('show ' + item);
+        
+            resualt += `
+                <!-- Start Item -->
+                <div class="cart-item">
+                    <img src="${item.image}" alt="CartProduct">
+                    <div>
+                        <h4>${item.title}</h4>
+                        <h5>${item.price}$</h5>
+                        <span class="remove-item" data-id="${item.id}">remove</span>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-up" data-id="${item.id}"></i>
+                        <p class="item-amount">1</p>
+                        <i class="fas fa-chevron-down" data-id="${item.id}"></i>
+                    </div>
+                </div>         
+                <!-- End Item -->
+            `;
+
+        cartContent.innerHTML = resualt;
+    }
+
+    // show cart function
+    showCart(){
+        cartOverlay.classList.add('transparentBcg');
+        cartDOM.classList.add('showCart')
+    }
+
+    closeCart(){
+        cartOverlay.classList.remove('transparentBcg');
+        cartDOM.classList.remove('showCart');
 
     }
 
@@ -198,6 +234,14 @@ document.addEventListener('DOMContentLoaded',() => {
     const ui = new UI();
     const products = new Products();
 
+    closeCart.addEventListener('click', () =>{
+        cartOverlay.classList.remove('transparentBcg'); 
+        cartDOM.classList.remove('showCart');
+
+        console.log('close cart testing !!!');
+    });
+    
+
     products.getProducts().then(products => {
 
         ui.displayProducts(products);
@@ -216,6 +260,8 @@ document.addEventListener('DOMContentLoaded',() => {
 
     });
 
-    
 
 });
+
+let ui = new UI();
+//closeCart.addEventListener('click', ui.closeCart());
