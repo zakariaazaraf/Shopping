@@ -64,7 +64,7 @@ class UI{
                         <img src="${product.image}" alt="${product.title}" class="product-img"/>
                         <button class="bag-btn" data-id="${product.id}">
                             <i class="fas fa-shopping-cart"></i>
-                            add to bag
+                            add to cart
                         </button>
                     </div>
                     <h3>${product.title}</h3>
@@ -212,6 +212,23 @@ class UI{
         clearCart.addEventListener('click', ()=>{
             this.clearCart();
         });
+
+        // cart fonctionallity
+        cartContent.addEventListener('click', event =>{
+            switch(event.target.className){
+                case 'fas fa-chevron-up': 
+                ;
+                break;
+                case 'fas fa-chevron-down': console.log('down click ' + event.target.dataset.id);
+                break;
+                case 'remove-item': 
+                    this.removeItem(event.target.dataset.id);
+                    cartContent.removeChild(event.target.parentElement.parentElement);
+                break;
+                default:;
+            }
+            
+        });
     }
 
     // clear all items function
@@ -221,6 +238,14 @@ class UI{
 
         // remove the items one by one
         cartItems.forEach(id => this.removeItem(id));
+        console.log(cartContent.children);
+        // remove cart from the cart content
+        while(cartContent.children.length > 0){
+            cartContent.removeChild(cartContent.children[0]);
+        }
+
+        // hide the cart after the removing is done
+        this.closeCart();
         
     }
 
@@ -238,7 +263,7 @@ class UI{
         // get the button and handel it by enable and change 'in card' to 'add to cart'
         let button = this.getSingleButton(id);
         button.disabled = false;
-        button.innerHTML = `<i class='fas fa-shopping-cart'></i>add to bag`;
+        button.innerHTML = `<i class='fas fa-shopping-cart'></i>add to cart`;
 
         
     }
