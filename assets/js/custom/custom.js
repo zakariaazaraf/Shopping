@@ -146,13 +146,14 @@ class UI{
     }
 
     // add the cart items
-    addCartItem(item){
-        let resualt = '';
-        console.log('show ' + item);
+    addCartItem(item){  
         
-            resualt += `
+        let div = document.createElement('div'); // think to append div(s) every time the user add an item
+        div.classList.add('cart-item'); // custimaze the div    
+        
+            div.innerHTML = `
                 <!-- Start Item -->
-                <div class="cart-item">
+                
                     <img src="${item.image}" alt="CartProduct">
                     <div>
                         <h4>${item.title}</h4>
@@ -161,14 +162,14 @@ class UI{
                     </div>
                     <div>
                         <i class="fas fa-chevron-up" data-id="${item.id}"></i>
-                        <p class="item-amount">1</p>
+                        <p class="item-amount">${item.amount}</p>
                         <i class="fas fa-chevron-down" data-id="${item.id}"></i>
                     </div>
-                </div>         
+               
                 <!-- End Item -->
             `;
-
-        cartContent.innerHTML = resualt;
+        cartContent.insertBefore(div, null);
+        
     }
 
     // show cart function
@@ -182,8 +183,7 @@ class UI{
         cartDOM.classList.remove('showCart');
 
     }
-
-    
+  
 }
 
 // class responsable for storing the data
@@ -205,25 +205,6 @@ class Storage{
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
-    /* static addProductToCart(product){
-        cartContent.innerHTML = `
-            <!-- Start Item -->
-                <div class="cart-item">
-                    <img src="${product.image}" alt="CartProduct">
-                    <div>
-                        <h4>${product.title}</h4>
-                        <h5>${product.price}$</h5>
-                        <span class="remove-item">remove</span>
-                    </div>
-                    <div>
-                        <i class="fas fa-chevron-up"></i>
-                        <p class="item-amount">1</p>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>         
-                <!-- End Item -->
-        `;
-    } */
 
 }
 
@@ -234,11 +215,9 @@ document.addEventListener('DOMContentLoaded',() => {
     const ui = new UI();
     const products = new Products();
 
-    closeCart.addEventListener('click', () =>{
+    closeCart.addEventListener('click', () =>{ // CLOSE CART BUTTON
         cartOverlay.classList.remove('transparentBcg'); 
         cartDOM.classList.remove('showCart');
-
-        console.log('close cart testing !!!');
     });
     
 
@@ -263,5 +242,3 @@ document.addEventListener('DOMContentLoaded',() => {
 
 });
 
-let ui = new UI();
-//closeCart.addEventListener('click', ui.closeCart());
