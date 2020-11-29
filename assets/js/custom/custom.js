@@ -79,8 +79,6 @@ class UI{
         
     } 
 
-    
-
     // Start bagButtons function, handel the cart and buttons behavior
     getBagButtons(){
 
@@ -178,11 +176,79 @@ class UI{
         cartDOM.classList.add('showCart')
     }
 
+    // close the cart item
     closeCart(){
         cartOverlay.classList.remove('transparentBcg');
         cartDOM.classList.remove('showCart');
-
     }
+
+    // setup app on refrech
+    setupApp(){
+        // get data cart from the local storage
+        cart = Storage.getCart();
+
+        // set car values and total price
+        this.setCartValues(cart);
+
+        // add item to the cart
+        this.populateCart(cart);
+
+        // add Events Listner
+
+        cartBtn.addEventListener('click', this.showCart); // when the cart button clicked, show the cart items
+
+        closeCart.addEventListener('click', this.closeCart); // close the cart from the close button
+       
+    }
+
+    // add item(s) to the cart 
+    populateCart(cart){
+        cart.forEach(item => this.addCartItem(item));
+    }
+
+    cartLogic(){
+
+        // claer all items
+        clearCart.addEventListener('click', ()=>{
+            this.clearCart();
+        });
+    }
+
+    // clear all items function
+    clearCart(){
+        // get the ids of the items
+        let cartItems = cart.map(item => item.id);
+
+        // remove the items one by one
+        cartItems.forEach(id => this.removeItem(id));
+        
+    }
+
+    removeItem(id){
+
+        // update the cart, by remve just the item that have the id passed in the function
+        cart = cart.filter(item => item.id !== id);
+
+        // set the cart values, the number and the total price
+        this.setCartValues(cart);
+
+        // save cart values to the local storage
+        Storage.saveCart(cart);
+
+        // get the button and handel it by enable and change 'in card' to 'add to cart'
+        let button = this.getSingleButton(id);
+        button.disabled = false;
+        button.innerHTML = `<i class='fas fa-shopping-cart'></i>add to bag`;
+
+        
+    }
+
+    // get the button and return it
+    getSingleButton(id){
+        return buttonsDOM.find(button => button.dataset.id === id);
+    }
+        
+    
   
 }
 
@@ -205,33 +271,38 @@ class Storage{
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
+    // get the cart data from the local storage
+    static getCart(){
+        let data = localStorage.getItem('cart');
+        return data ? JSON.parse(data) : [];
+    }
+
 
 }
 
 document.addEventListener('DOMContentLoaded',() => {
 
-    
-
+    // instanciations of classes
     const ui = new UI();
     const products = new Products();
 
-    closeCart.addEventListener('click', () =>{ // CLOSE CART BUTTON
-        cartOverlay.classList.remove('transparentBcg'); 
-        cartDOM.classList.remove('showCart');
-    });
-    
+    // setup the application, by displaying the data from the local storage
+    ui.setupApp();
 
+    // get the product and show them in the page
     products.getProducts().then(products => {
 
+        // display fuction
         ui.displayProducts(products);
 
         // Is the function is static one you don't have to make an instance of it to work with
         Storage.saveProducts(products);
 
+
     }).then(() =>{
 
         ui.getBagButtons();
-        
+        ui.cartLogic();
 
     }).catch(err => {
 
