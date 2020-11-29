@@ -215,14 +215,36 @@ class UI{
 
         // cart fonctionallity
         cartContent.addEventListener('click', event =>{
+            let id = event.target.dataset.id,
+                cartItem = cart.find(item => item.id === id);
+            
             switch(event.target.className){
                 case 'fas fa-chevron-up': 
-                ;
+                cartItem.amount ++;
+                // setting the item number and the total price
+                event.target.nextElementSibling.innerText = cartItem.amount;
+                // save the cart in loal storage
+                Storage.saveCart(cart);
+                // setting the item number and the total price
+                this.setCartValues(cart);
                 break;
-                case 'fas fa-chevron-down': console.log('down click ' + event.target.dataset.id);
+                case 'fas fa-chevron-down': 
+                cartItem.amount --;
+                if(cartItem.amount > 0){
+                    
+                    // save the cart in loal storage
+                    Storage.saveCart(cart);
+                    // setting the item number and the total price
+                    this.setCartValues(cart);
+                    // update the text content
+                    event.target.previousElementSibling.innerText = cartItem.amount;
+                }else{
+                    cartContent.removeChild(event.target.parentElement.parentElement);
+                    this.removeItem(id);
+                }        
                 break;
                 case 'remove-item': 
-                    this.removeItem(event.target.dataset.id);
+                    this.removeItem(id);
                     cartContent.removeChild(event.target.parentElement.parentElement);
                 break;
                 default:;
