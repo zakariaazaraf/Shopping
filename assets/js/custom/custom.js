@@ -38,25 +38,27 @@ class Products{
             let contentful = await client.getEntries({
                 content_type: 'productProjet'
             });
-            console.log(contentful.items);
+            
+            /* let result = await fetch('file://../../../products.json')
 
-            let result = await fetch('./../../../products.json')
+            let data = await result.json() // convert data */
 
-            let data = await result.json() // convert data
 
             // DESTRUCTING DATA
             //let products = contentful.items;
-            let products = [...data.items, ...contentful.items]; // combin two source of data, local one and the contentful one
+            let products = [/* ...data.items,  */...contentful.items]; // combin two source of data, local one and the contentful one
             //let products = data.items;
             products = products.map(item =>{
                 const {title, price} = item.fields;
                 // const id = item.sys;
                 const {id} = item.sys;
-                const image = item.fields.image.fields.file.url;
+                // U SHOULD ADD THE "HTTPS" TO BE ABEL TO USE THE IMAGES
+                const image = 'https:' + item.fields.image.fields.file.url;
                 return {id, title, price, image};
             });
 
             return products;
+            
 
         } catch (error) {
 
